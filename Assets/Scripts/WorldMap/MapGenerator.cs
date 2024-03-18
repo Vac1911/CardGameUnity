@@ -16,8 +16,6 @@ namespace CardGame.Map
         public int height = 15;
         public int pathDensity = 6;
 
-        public List<NodeType> types = new List<NodeType>();
-
         protected List<Path> paths = new List<Path>();
         protected List<Node> nodes = new List<Node>();
 
@@ -57,7 +55,7 @@ namespace CardGame.Map
 
             foreach (var position in positions)
             {
-                var node = new Node(position, types[0]);
+                var node = new Node(position, new EncounterNodeEvent());
                 var nodePaths = paths.Where(path => path.start == position).ToArray();
                 foreach(var path in nodePaths) {
                     node.AddConnection(Array.IndexOf(positions.ToArray(), path.end));

@@ -12,17 +12,18 @@ namespace CardGame
         {
             get
             {
-                return _position;
+                return _privatePosition;
             }
             set
             {
-                _position = value;
+                _privatePosition = value;
                 UpdateWorldTransform();
             }
         }
 
         [SerializeField]
-        private Vector3Int _position;
+        /*[HideInInspector]*/
+        private Vector3Int _privatePosition;
 
         void OnEnable()
         {

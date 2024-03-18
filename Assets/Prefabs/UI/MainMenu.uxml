@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Prefabs/UI/MainMenu.uss?fileID=7433441132597879392&amp;guid=37984b27d0fe7aa4480e0dd09a3dff82&amp;type=3#MainMenu" />
+    <ui:GroupBox class="main-menu-container">
+        <ui:Button text="Continue" display-tooltip-when-elided="true" name="ContinueButton" class="menu-button" />
+        <ui:Button text="New Game" display-tooltip-when-elided="true" name="NewButton" class="menu-button" />
+        <ui:Button text="Settings" display-tooltip-when-elided="true" name="SettingsButton" class="menu-button" />
+        <ui:Button text="Quit" display-tooltip-when-elided="true" name="QuitButton" class="menu-button" />
+    </ui:GroupBox>
+</ui:UXML>

@@ -60,6 +60,7 @@ namespace CardGame.Map
             }
 
             currentNode = nodes[0];
+            currentNode.state = NodeState.Current;
         }
 
         public NodeView GetNodeView(Node node)
@@ -71,10 +72,30 @@ namespace CardGame.Map
 
             return null;
         }
-        
+
         public void TravelTo(Node node)
         {
+            if (currentNode == null)
+            {
+                Debug.Log("No current node");
+                return;
+            }
 
+            if (!currentNode.HasConnectionTo(this, node))
+            {
+                Debug.Log("Cannot travel to unconnected node");
+                return;
+            }
+
+            if (node.state != NodeState.Unvisited)
+            {
+                Debug.Log("Can only travel to connected nodes");
+            }
+
+            currentNode.state = NodeState.Visited;
+            node.state = NodeState.Current;
+
+            node.nodeEvent.OnVisit();
         }
     }
 }

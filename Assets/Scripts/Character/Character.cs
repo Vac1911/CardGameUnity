@@ -1,5 +1,6 @@
 using CardGame;
 using CardGame.Effects;
+using CardGame.Conditions;
 using Extensions;
 using System;
 using System.Collections;
@@ -41,6 +42,13 @@ namespace CardGame
         public List<Card> hand = new List<Card>();
         [HideInInspector]
         public List<Card> discardPile = new List<Card>();
+
+
+        [SerializeReference]
+        public Condition condition;
+
+        [SerializeReference]
+        public List<Condition> conditions = new List<Condition>();
 
         public event Action<Card> OnCardDraw = card => { };
         public event Action<Card> OnCardDiscard = card => { };

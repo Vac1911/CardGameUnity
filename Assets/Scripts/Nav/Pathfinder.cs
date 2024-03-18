@@ -22,7 +22,7 @@ public class Pathfinder
 
     public void BuildNavGraph()
     {
-        grid = encounterGrid.GetNavGraph();
+        grid = encounterGrid.GetNavGraph(); 
     }
 
     public void DebugNavGraph()

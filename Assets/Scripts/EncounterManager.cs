@@ -1,6 +1,7 @@
 using Patterns;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace CardGame
@@ -56,6 +57,16 @@ namespace CardGame
             if(characterIndex > turnIndex)
                 turnIndex -= 1;
             characters.Remove(chatacter);
+        }
+
+        public bool IsEncounterOver()
+        {
+            if (characters.All(c => c.team != Team.Enemy))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public Character GetCurrentCharacter()

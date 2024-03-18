@@ -14,7 +14,7 @@
         }
 
         //public getter
-        public static T Instance { get; private set; } = CreateInstance();
+        public static T Instance { get; set; } = CreateInstance();
 
         static T CreateInstance() => Instance ?? (Instance = new T());
 

@@ -1,4 +1,5 @@
 ﻿using Patterns.StateMachine;
+using System.Diagnostics;
 
 namespace Tools.UI.Card
 {

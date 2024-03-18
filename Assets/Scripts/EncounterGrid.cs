@@ -17,7 +17,6 @@ namespace CardGame
         [HideInInspector]
         public List<GridTransform> transforms;
 
-        [HideInInspector]
         public Tilemap tilemap;
 
         public Grid layoutGrid
@@ -41,7 +40,7 @@ namespace CardGame
 
         void Awake()
         {
-            tilemap = GetComponentInChildren<Tilemap>();
+            /*tilemap = GetComponentInChildren<Tilemap>();*/
             tilemap.CompressBounds();
         }
 

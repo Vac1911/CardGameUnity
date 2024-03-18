@@ -24,6 +24,11 @@ namespace CardGame.Effects
             return;
         }
 
+        public void DrawFx(Character character)
+        {
+
+        }
+
         public List<Vector3Int> GetPossibleTarget(Character character)
         {
             return character.encounterGrid.GetMovementPositions(character.GetCellPosition(), value);

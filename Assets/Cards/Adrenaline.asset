@@ -15,13 +15,22 @@ MonoBehaviour:
   cost: 1
   effects:
   - rid: 0
+  - rid: 3896939009046740992
   cardName: Adrenaline
   cardArt: {fileID: 0}
   references:
     version: 2
     RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
     - rid: 0
       type: {class: AddEnergy, ns: CardGame.Effects, asm: Assembly-CSharp}
       data:
         label: Add Energy
         value: 2
+    - rid: 3896939009046740992
+      type: {class: AddCondition, ns: CardGame.Effects, asm: Assembly-CSharp}
+      data:
+        label: Add Condition
+        condition:
+          rid: -2

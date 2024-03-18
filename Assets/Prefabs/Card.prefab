@@ -318,7 +318,7 @@ GameObject:
   - component: {fileID: 7375693086349266152}
   - component: {fileID: 5965555409100244655}
   m_Layer: 0
-  m_Name: CardPrefabPure
+  m_Name: Card
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

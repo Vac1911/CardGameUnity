@@ -47,24 +47,24 @@ namespace CardGame.Map
                 return;
             }
 
-            if (node.type == null)
+            if (node.nodeEvent == null)
             {
-                Debug.Log("cannot render node.type: null");
+                Debug.Log("cannot render node.nodeEvent: null");
                 return;
             }
 
-            if (node.type.sprite == null)
+            if (node.nodeEvent.GetSprite() == null)
             {
-                Debug.Log("cannot render node.type.sprite: null");
+                Debug.Log("cannot render node.nodeEvent.GetSprite(): null");
                 return;
             }
 
-            spriteRenderer.sprite = node.type.sprite;
+            spriteRenderer.sprite = node.nodeEvent.GetSprite();
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            throw new System.NotImplementedException();
+            map.TravelTo(node);
         }
 
         public void OnPointerEnter(PointerEventData eventData)

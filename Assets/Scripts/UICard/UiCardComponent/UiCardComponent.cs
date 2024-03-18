@@ -1,6 +1,7 @@
 ﻿using Extensions;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Tools.UI.Card
 {
@@ -76,7 +77,7 @@ namespace Tools.UI.Card
         CardGame.Card cardData;
         [SerializeField] public UiCardParameters cardConfigsParameters;
 
-        UiCardHandFsm Fsm { get; set; }
+        public UiCardHandFsm Fsm { get; set; }
         Transform MyTransform { get; set; }
         Collider MyCollider { get; set; }
         SpriteRenderer[] MyRenderers { get; set; }
