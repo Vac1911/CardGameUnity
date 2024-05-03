@@ -8,27 +8,23 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
+using Debug = UnityEngine.Debug;
 
 namespace CardGame
 {
-    [CustomPropertyDrawer(typeof(Condition), true)]
+   /* [CustomPropertyDrawer(typeof(Condition), true)]
     public class ConditionEditor : PropertyDrawer
     {
-        public override VisualElement CreatePropertyGUI(SerializedProperty property)
+
+        private Type[] conditionTypes;
+        private static string[] options;
+
+        void OnEnable()
         {
-            // Create property container element.
-            var container = new VisualElement();
-
-            // Create property fields.
-            var valueField = new PropertyField(property.FindPropertyRelative("value"));
-
-            // Add fields to the container.
-            container.Add(valueField);
-
-            return container;
+            conditionTypes = Utils.GetImplementingClasses(typeof(Condition));
+            options = conditionTypes.Select(t => t.ToString()).Prepend("-- Type --").ToArray();
         }
 
-        // Draw the property inside the given rect
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             // Using BeginProperty / EndProperty on the parent property means that
@@ -38,22 +34,15 @@ namespace CardGame
             // Draw label
             position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
 
-            // Don't make child fields be indented
-            var indent = EditorGUI.indentLevel;
-            EditorGUI.indentLevel = 0;
+            *//*Debug.Log(property.FindPropertyRelative("value"));*//*
 
-            /*// Calculate rects
             var valueRect = new Rect(position.x, position.y, 30, position.height);
 
-            // Draw fields - pass GUIContent.none to each so they are drawn without labels
-            EditorGUI.PropertyField(valueRect, property.FindPropertyRelative("value"), GUIContent.none);*/
-
-            // Set indent back to what it was
-            EditorGUI.indentLevel = indent;
+            EditorGUI.IntField(valueRect, 1);
 
             EditorGUI.EndProperty();
         }
-    }
+    }*/
 
     /*public class ConditionEditor : Editor
     {

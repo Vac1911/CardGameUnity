@@ -44,9 +44,10 @@ namespace CardGame
 
         public void CreateMarkers(List<Vector3Int> positions)
         {
+            Transform parent = transform.parent;
             foreach (var position in positions)
             {
-                GameObject gameObject = Instantiate(positionMarkerPrefab, grid.GetCellCenterWorld(position) - Vector3Int.forward, Quaternion.identity);
+                GameObject gameObject = Instantiate(positionMarkerPrefab, grid.GetCellCenterWorld(position) - Vector3Int.forward, Quaternion.identity, parent);
                 MovementMarker marker = gameObject.GetComponent<MovementMarker>();
                 marker.position = position;
                 positionMarkers.Add(marker);

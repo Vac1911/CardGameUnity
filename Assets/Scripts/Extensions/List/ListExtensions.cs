@@ -108,10 +108,11 @@ namespace Extensions
         public static void Print<T>(this List<T> list, string log = "")
         {
             log += "[";
+            log += Environment.NewLine;
             for (var i = 0; i < list.Count; i++)
             {
                 log += list[i].ToString();
-                log += i != list.Count - 1 ? ", " : "]";
+                log += i != list.Count - 1 ? ", " + Environment.NewLine : Environment.NewLine + "]";
             }
 
             Debug.Log(log);

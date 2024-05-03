@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:DropdownField label="Effect Class" index="-1" choices="System.Collections.Generic.List`1[System.String]" name="EffectClass" />
+    <ui:ListView focusable="true" name="DefaultInspector" />
+</ui:UXML>

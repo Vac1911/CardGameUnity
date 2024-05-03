@@ -18,6 +18,7 @@ namespace CardGame
         public List<GridTransform> transforms;
 
         public Tilemap tilemap;
+        public Tilemap wallmap;
 
         public Grid layoutGrid
         {
@@ -42,6 +43,7 @@ namespace CardGame
         {
             /*tilemap = GetComponentInChildren<Tilemap>();*/
             tilemap.CompressBounds();
+            wallmap.CompressBounds();
         }
 
         public Vector3Int WorldToCellPosition(Vector3 worldPosition)
@@ -67,6 +69,13 @@ namespace CardGame
             return null;
         }
 
+        public TileBase GetWallAtCell(Vector3Int cell)
+        {
+            TileBase tile = wallmap.GetTile(cell);
+
+            return tile;
+        }
+
         public Character GetCharacterAtCell(Vector3Int cell)
         {
             var objAtCell = GetObjectAtCell(cell);
@@ -85,6 +94,7 @@ namespace CardGame
             return GetCharacters().Where(c => c.team.HasFlag(team)).ToList();
         }
 
+        // Get all positions adjacent to a given position
         public List<Vector3Int> GetAdjacentPositions(Vector3Int basePosition, bool withDiagonal = true)
         {
             List<Vector3Int> positions = new List<Vector3Int>();
@@ -96,6 +106,22 @@ namespace CardGame
             }
 
             return positions;
+        }
+
+        // Get all positions touching a given position where a tile exists
+        public List<Vector3Int> GetNeighborCellPositions(Vector3Int center, bool withDiagonal = true)
+        {
+            List<Vector3Int> neighborTiles = new List<Vector3Int>();
+            var adgacentPositions = GetAdjacentPositions(center, withDiagonal);
+            foreach (var position in adgacentPositions)
+            {
+                if (HasCell(position))
+                {
+                    neighborTiles.Add(position);
+                }
+            }
+
+            return neighborTiles;
         }
 
         // Breadth-first search for all possible positions that could be moved to
@@ -112,22 +138,6 @@ namespace CardGame
             }
 
             return new List<Vector3Int>(positions);
-        }
-
-        public List<Vector3Int> GetNeighborCellPositions(Vector3Int center)
-        {
-            List<Vector3Int> neighborTiles = new List<Vector3Int>();
-            foreach (var neighbourPosition in neighbourPositions)
-            {
-                Vector3Int position = center + neighbourPosition;
-
-                if (HasCell(position))
-                {
-                    neighborTiles.Add(position);
-                }
-            }
-
-            return neighborTiles;
         }
 
         public bool HasCell(Vector3Int position)
@@ -228,9 +238,9 @@ namespace CardGame
             return positions;
         }
 
-        public Dictionary<Vector3Int,PathNode> GetNavGraph()
+        public List<PathNode> GetNavGraph()
         {
-            Dictionary<Vector3Int, PathNode> graph = new Dictionary<Vector3Int, PathNode>();
+            List<PathNode> graph = new List<PathNode>();
 
             // Iterate through each point in the tilemap bounds
             foreach (var pos in tilemap.cellBounds.allPositionsWithin)
@@ -242,7 +252,7 @@ namespace CardGame
                 if (tile)
                 {
                     node = new PathNode(pos);
-                    graph[pos] = node;
+                    graph.Add(node);
                 }
             }
 

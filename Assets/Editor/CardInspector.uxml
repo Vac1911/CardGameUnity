@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:Label tabindex="-1" text="Label" display-tooltip-when-elided="true" />
+    <ui:TextField picking-mode="Ignore" label="Name" binding-path="cardName" name="Name" />
+    <ui:IntegerField label="Cost" value="0" binding-path="cost" name="Cost" />
+    <uie:PropertyField binding-path="cardArt" name="Art" label="Art" />
+    <uie:PropertyField name="Effects" binding-path="effects" label="Effects" />
+</ui:UXML>

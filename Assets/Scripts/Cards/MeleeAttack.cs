@@ -1,3 +1,4 @@
+using CardGame.Conditions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -26,7 +27,11 @@ namespace CardGame.Effects
             if(attackedCharacter != null)
             {
                 Debug.Log("Hit");
-                attackedCharacter.TakeDamage(damage);
+
+                Condition power = character.GetCondition(typeof(Power));
+                int modifier = power != null ? power.value : 0;
+
+                attackedCharacter.TakeDamage(damage + modifier);
             }
             await Task.Yield();
         }

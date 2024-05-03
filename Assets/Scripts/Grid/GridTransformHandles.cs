@@ -12,11 +12,12 @@ namespace CardGame
     [CustomEditor(typeof(GridTransform))]
     public class GridTransformHandles : Editor
     {
-        private const int arrowSize = 2;
-        private const float CenterOffset = 3f;
+        private const float arrowSize = 1f;
 
-        private int leftId, rightId, forwardId, backId;
+        private int forwardId, rightId;
+        private Vector3 directionForward, directionRight, gridCenter;
         private Transform trans;
+        private GridTransform gridTransform;
         private bool cached = false;
 
         private Vector3 selectedDirection = Vector3.zero;
@@ -24,10 +25,10 @@ namespace CardGame
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
-            var t = target as GridTransform;
+            gridTransform = target as GridTransform;
 
             // Render a field for get+set position accessors:
-            var positionInput = EditorGUILayout.Vector3IntField("Grid Position", t.position);
+            var positionInput = EditorGUILayout.Vector3IntField("Grid Position", gridTransform.position);
             SetPosition(positionInput);
         }
 
@@ -36,74 +37,39 @@ namespace CardGame
         {
             if (!cached)
             {
-                var t = target as GridTransform;
-                trans = t.transform;
+                gridTransform = target as GridTransform;
+                trans = gridTransform.transform;
 
-                leftId = GUIUtility.GetControlID(FocusType.Passive);
-                rightId = GUIUtility.GetControlID(FocusType.Passive);
                 forwardId = GUIUtility.GetControlID(FocusType.Passive);
-                backId = GUIUtility.GetControlID(FocusType.Passive);
+                rightId = GUIUtility.GetControlID(FocusType.Passive);
+
+                gridCenter = gridTransform.grid.tilemap.GetCellCenterWorld(Vector3Int.zero);
+                directionForward = gridTransform.grid.tilemap.GetCellCenterWorld(Vector3Int.up) - gridCenter;
+                directionRight = gridTransform.grid.tilemap.GetCellCenterWorld(Vector3Int.right) - gridCenter;
 
                 cached = true;
             }
 
-
-            if (Event.current.type == EventType.Repaint)
+            if (Event.current.type == EventType.Repaint || Event.current.type == EventType.Layout)
             {
+                Vector3 pos = trans.position;
+
                 {
-                    Vector3 pos = trans.position + Vector3.left * CenterOffset;
-                    Handles.color = selectedDirection == Vector3.left ? Color.magenta : Color.yellow;
-                    Handles.ArrowHandleCap(leftId, pos, Quaternion.LookRotation(Vector3.left), arrowSize, EventType.Repaint);
+                    if(Event.current.type == EventType.Repaint) Handles.color = selectedDirection == Vector3.up ? Color.yellow : Color.blue;
+                    Handles.ArrowHandleCap(forwardId, pos, Quaternion.LookRotation(directionForward.normalized), arrowSize, Event.current.type);
                 }
 
                 {
-                    Vector3 pos = trans.position + Vector3.right * CenterOffset;
-                    Handles.color = selectedDirection == Vector3.right ? Color.magenta : Color.red;
-                    Handles.ArrowHandleCap(rightId, pos, Quaternion.LookRotation(Vector3.right), arrowSize, EventType.Repaint);
-                }
-
-                {
-                    Vector3 pos = trans.position + Vector3.up * CenterOffset;
-                    Handles.color = selectedDirection == Vector3.up ? Color.magenta : Color.blue;
-                    Handles.ArrowHandleCap(forwardId, pos, Quaternion.LookRotation(Vector3.up), arrowSize, EventType.Repaint);
-                }
-
-                {
-                    Vector3 pos = trans.position + Vector3.down * CenterOffset;
-                    Handles.color = selectedDirection == Vector3.down ? Color.magenta : Color.cyan;
-                    Handles.ArrowHandleCap(backId, pos, Quaternion.LookRotation(Vector3.down), arrowSize, EventType.Repaint);
-                }
-            }
-            else if (Event.current.type == EventType.Layout)
-            {
-                {
-                    Vector3 pos = trans.position + Vector3.left * CenterOffset;
-                    Handles.ArrowHandleCap(leftId, pos, Quaternion.LookRotation(Vector3.left), arrowSize, EventType.Layout);
-                }
-
-                {
-                    Vector3 pos = trans.position + Vector3.right * CenterOffset;
-                    Handles.ArrowHandleCap(rightId, pos, Quaternion.LookRotation(Vector3.right), arrowSize, EventType.Layout);
-                }
-
-                {
-                    Vector3 pos = trans.position + Vector3.up * CenterOffset;
-                    Handles.ArrowHandleCap(forwardId, pos, Quaternion.LookRotation(Vector3.up), arrowSize, EventType.Layout);
-                }
-
-                {
-                    Vector3 pos = trans.position + Vector3.down * CenterOffset;
-                    Handles.ArrowHandleCap(backId, pos, Quaternion.LookRotation(Vector3.down), arrowSize, EventType.Layout);
+                    if (Event.current.type == EventType.Repaint) Handles.color = selectedDirection == Vector3.right ? Color.yellow : Color.red;
+                    Handles.ArrowHandleCap(rightId, pos, Quaternion.LookRotation(directionRight.normalized), arrowSize, Event.current.type);
                 }
             }
             else if (Event.current.type == EventType.MouseDown)
             {
                 int id = HandleUtility.nearestControl;
 
-                if (id == leftId) selectedDirection = Vector3.left;
+                if (id == forwardId) selectedDirection = Vector3.up;
                 else if (id == rightId) selectedDirection = Vector3.right;
-                else if (id == forwardId) selectedDirection = Vector3.up;
-                else if (id == backId) selectedDirection = Vector3.down;
                 else selectedDirection = Vector3.zero;
             }
         }

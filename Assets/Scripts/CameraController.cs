@@ -7,16 +7,21 @@ using static UnityEditor.SceneView;
 using static CardGameControls;
 using UnityEngine.InputSystem;
 using System;
+using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
 
 public class CameraController : MonoBehaviour, IPlayerActions
 {
-    public GameObject grid;
+    public GameObject encounter;
 
     CardGameControls controls;
 
-    [Range(4f, 16f)]
-    public float cameraSensitivity = 8f;
-    
+    /*[Range(4f, 16f)]
+    public float cameraSensitivity = 8f;*/
+
+    // Note: higher number is less sensitive
+    [MinAttribute(1f)]
+    public float zoomSensitivity = 120f;
+
     private Vector2 positionDelta;
     private float zoomDelta;
 
@@ -45,16 +50,29 @@ public class CameraController : MonoBehaviour, IPlayerActions
 
     public void OnMove(InputAction.CallbackContext context)
     {
+        if (!context.performed) return;
+
         positionDelta = context.ReadValue<Vector2>();
         print("move " + positionDelta.ToString());
-        var nextPosition = transform.position;
-        nextPosition.x += positionDelta.x;
-        transform.position = nextPosition;
+        var nextPosition = encounter.transform.position;
+        nextPosition.x -= positionDelta.x;
+        nextPosition.y -= positionDelta.y;
+        encounter.transform.position = nextPosition;
     }
 
     public void OnZoom(InputAction.CallbackContext context)
     {
-        zoomDelta = context.ReadValue<Vector2>().y;
+        if (!context.performed) return;
+
+        zoomDelta = context.ReadValue<Vector2>().y / zoomSensitivity;
+        float prevScale = encounter.transform.localScale.y;
+        float nextScale = Math.Max(prevScale + zoomDelta, 1f);
+        encounter.transform.localScale = Vector3.one * nextScale;
+
+
+        var nextPosition = encounter.transform.position / prevScale * nextScale;
+        encounter.transform.position = nextPosition;
+
         print("zoom " + zoomDelta.ToString());
     }
 }

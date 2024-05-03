@@ -24,4 +24,4 @@ MonoBehaviour:
       type: {class: MeleeAttack, ns: CardGame.Effects, asm: Assembly-CSharp}
       data:
         label: Melee Attack
-        damage: 3
+        damage: 2

@@ -50,7 +50,10 @@ namespace CardGame
                 var path = pathfinder.FindPath(gridTransform.position, closestOpposingCharacter.gridTransform.position);
                 var moveLimit = 3;
                 var pathLimit = path.SkipLast(1).Take(Math.Min(path.Count - 1, moveLimit)).ToList();
+                path.Print();
 
+
+                Debug.DrawLine(encounterGrid.CellToWorldPosition(gridTransform.position), encounterGrid.CellToWorldPosition(pathLimit[0]), Color.cyan, 5f);
                 for (var i = 1; i < pathLimit.Count; i++)
                 {
 
@@ -58,6 +61,8 @@ namespace CardGame
                     var end = encounterGrid.CellToWorldPosition(path[i]);
                     Debug.DrawLine(start, end, Color.cyan, 5f);
                 }
+
+                target = pathLimit.Last();
 
                 PlayCard(moveCard);
             }

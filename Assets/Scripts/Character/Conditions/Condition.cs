@@ -14,6 +14,11 @@ namespace CardGame.Conditions
         public abstract string description { get; }
 
         public abstract ConditionLength length { get; }
+
+        public Condition(int value)
+        {
+            this.value = value;
+        }
     }
 
     public enum ConditionLength

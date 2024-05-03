@@ -43,10 +43,6 @@ namespace CardGame
         [HideInInspector]
         public List<Card> discardPile = new List<Card>();
 
-
-        [SerializeReference]
-        public Condition condition;
-
         [SerializeReference]
         public List<Condition> conditions = new List<Condition>();
 
@@ -56,20 +52,21 @@ namespace CardGame
         public event Action<Character> OnTurnEnd = character => { };
         public event Action<Character> OnTakeDamage = character => { };
         public event Action<Character> OnDeathEvent = character => { };
+        public event Action<Character> OnConditionChange = character => { };
 
         protected readonly Vector3Int[] neighbourPositions =
         {
-        Vector3Int.up,
-        Vector3Int.right,
-        Vector3Int.down,
-        Vector3Int.left,
+            Vector3Int.up,
+            Vector3Int.right,
+            Vector3Int.down,
+            Vector3Int.left,
     
-        // diagonal neighbours
-        Vector3Int.up + Vector3Int.right,
-        Vector3Int.up + Vector3Int.left,
-        Vector3Int.down + Vector3Int.right,
-        Vector3Int.down + Vector3Int.left
-    };
+            // diagonal neighbours
+            Vector3Int.up + Vector3Int.right,
+            Vector3Int.up + Vector3Int.left,
+            Vector3Int.down + Vector3Int.right,
+            Vector3Int.down + Vector3Int.left
+        };
 
         public Tilemap tilemap
         {
@@ -182,6 +179,26 @@ namespace CardGame
             }
 
             return true;
+        }
+
+        public void AddCondition(Condition condition)
+        {
+            var type = condition.GetType();
+            if (conditions.Exists(c => c.GetType() == type))
+            {
+                var prevCond = GetCondition(type);
+                prevCond.value += condition.value;
+            }
+            else
+            {
+                conditions.Add(condition);
+            }
+            OnConditionChange(this);
+        }
+
+        public Condition GetCondition(Type type)
+        {
+            return conditions.Find(c => c.GetType() == type);
         }
 
         public void TakeDamage(int amount)

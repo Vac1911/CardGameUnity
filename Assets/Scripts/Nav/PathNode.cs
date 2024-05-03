@@ -22,12 +22,7 @@ public class PathNode
         }
     }
 
-    public PathNode(int x, int y) { X = x; Y = y; }
-    public PathNode(float x, float y) { X = (int)x; Y = (int)y; }
-    public PathNode(Vector2 v2) { X = (int)v2.x; Y = (int)v2.y; }
-    public PathNode(Vector2Int v2) { X = v2.x; Y = v2.y; }
-    public PathNode(Vector3 v3) { X = (int)v3.x; Y = (int)v3.y; }
-    public PathNode(Vector3Int v3) { X = v3.x; Y = v3.y; }
+    public PathNode(Vector3Int v3) { X = v3.x; Y = v3.y; gridPosition = v3; }
 
     public void SetObstacle(bool isOb)
     {
@@ -36,6 +31,12 @@ public class PathNode
 
     public override string ToString()
     {
-        return base.ToString() + ": " + X.ToString() + ", " + Y.ToString();
+        string str = "(" + X.ToString() + ", " + Y.ToString() + ")";
+        if(parent != null)
+        {
+            /*str += " -> " + parent.X.ToString() + ", " + parent.Y.ToString();*/
+            str += " -> " + parent.ToString();
+        }
+        return str;
     }
 }
