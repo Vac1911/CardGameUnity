@@ -1,3 +1,5 @@
+using NaughtyAttributes;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +10,7 @@ namespace CardGame
     public class GridTransform : MonoBehaviour
     {
         public EncounterGrid grid;
+        public event Action<GridTransform> OnMove = GridTransform => { };
         public Vector3Int position
         {
             get
@@ -21,8 +24,7 @@ namespace CardGame
             }
         }
 
-        [SerializeField]
-        /*[HideInInspector]*/
+        [ReadOnly]
         private Vector3Int _privatePosition;
 
         void OnEnable()
@@ -38,6 +40,7 @@ namespace CardGame
         protected void UpdateWorldTransform()
         {
             transform.position = grid.CellToWorldPosition(position);
+            OnMove(this);
         }
     }
 }

@@ -32,7 +32,11 @@ namespace CardGame.UI
 
         public void FollowCharacterTransform()
         {
-            Vector3 screenPoint = WorldToScreenSpace(character.transform.position, Camera.main, this.rectTransform);
+            var r = character.GetComponent<SpriteRenderer>();
+            var bounds = r.bounds;
+            Debug.DrawLine(bounds.min, bounds.max, Color.blue, 5f);
+
+            Vector3 screenPoint = WorldToScreenSpace(r.bounds.center, Camera.main, this.rectTransform);
             this.rectTransform.anchoredPosition = screenPoint;
         }
 
