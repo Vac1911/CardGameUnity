@@ -80,6 +80,8 @@ namespace Tools.UI.Card
 
         protected virtual void Start()
         {
+            Debug.Log("start");
+            Debug.Log(character);
             // Bind to CharacterManager Events
             character.OnCardDraw += DrawCard;
 
@@ -94,6 +96,7 @@ namespace Tools.UI.Card
 
         void DrawCard(CardGame.Card cardData)
         {
+            Debug.Log("DrawCard");
             // Spawn UI Card
             var cardGo = Instantiate(cardPrefabCs, gameView);
             cardGo.name = "Card_" + Count;

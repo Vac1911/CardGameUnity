@@ -36,8 +36,15 @@ namespace CardGame.UI
             var bounds = r.bounds;
             Debug.DrawLine(bounds.min, bounds.max, Color.blue, 5f);
 
-            Vector3 screenPoint = WorldToScreenSpace(r.bounds.center, Camera.main, this.rectTransform);
-            this.rectTransform.anchoredPosition = screenPoint;
+            Vector3 centerPoint = WorldToScreenSpace(bounds.center, Camera.main, this.rectTransform);
+            Vector3 minPoint = WorldToScreenSpace(bounds.min, Camera.main, this.rectTransform);
+            Vector3 maxPoint = WorldToScreenSpace(bounds.max, Camera.main, this.rectTransform);
+
+
+            this.rectTransform.anchoredPosition = centerPoint;
+
+            float height = maxPoint.y - minPoint.y;
+            this.rectTransform.sizeDelta = new Vector2(height, height);
         }
 
         public static Vector2 WorldToScreenSpace(Vector3 worldPos, Camera cam, RectTransform area)

@@ -1,35 +1,49 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 using ProceduralNoise;
-using Color = UnityEngine.Color;
 
 namespace CardGame
 {
     using Extensions;
+    using System.Collections;
     using System.Linq;
+    using Tools.UI.Card;
     using Unity.Mathematics;
-    using UnityEngine.TextCore.Text;
-    using UnityEngine.UIElements;
+    using UnityEngine.Tilemaps;
 
     public class EncounterGenerator : MonoBehaviour
     {
 
-        public int width = 64;
-        public int height = 64;
-        public int octaves = 4;
+        public int width = 32;
+        public int height = 32;
+        /*public int octaves = 4;
         public float frequency = 20f;
+        public AnimationCurve curve;*/
+        public int levels = 3;
+        public int buffer = 4;
 
         public uint seed = 0;
         Random rng;
-        
-        /*public float amplitude = 1f;*/
 
-        public int levels = 3;
-        public AnimationCurve curve;
+        public UiPlayerHand playerHand;
 
-        private void Start()
+        public TileBase tile;
+        public TileBase roadTile;
+        public WallSet wallSet;
+
+        public GameObject gridPrefab;
+        public GameObject roofPrefab;
+
+        public GameObject playerPrefab;
+        public List<GameObject> enemyPrefabs;
+
+        protected GameObject encounterObj;
+        protected EncounterManager encounterManager;
+        protected EncounterGrid encounter;
+
+        private void Awake()
         {
             if (seed == 0)
             {
@@ -37,56 +51,197 @@ namespace CardGame
             }
 
             rng = new Random(seed);
-
+            encounterObj = new GameObject("Encounter");
+            encounterManager = encounterObj.AddComponent<EncounterManager>();
             float[,] map = GenerateArray();
 
-            var buildings = GenerateBuildings();
+            var buildings = CreatedSlicedRects();
+            var texture = CreateSlicedTexture(buildings);
+            var grid = GenerateGrid(buildings);
+            encounterManager.grid = grid;
+            SpawnCharacters();
 
-            var texture = CreateVoronoiTexture(buildings.Select(b => b.center).ToList());
-            Sprite sprite = Sprite.Create(texture, new Rect(0, 0, width-1, height-1), new Vector2(0.5f, 0.5f), 8f);
+            Sprite sprite = Sprite.Create(texture, new Rect(0, 0, width, height), new Vector2(0.5f, 0.5f), 8f);
             GameObject newObj = new GameObject();
             var renderer = newObj.AddComponent<SpriteRenderer>();
             renderer.sprite = sprite;
+
+            InitCamera();
         }
 
-        public Texture2D CreateTexture(float[,] map, Color[] colors)
+        protected EncounterGrid GenerateGrid(List<RectInt> rects)
         {
-            var texture = new Texture2D(map.GetUpperBound(0), map.GetUpperBound(1), TextureFormat.RGBA32, false);
+            GameObject gridObj = Instantiate(gridPrefab, new Vector3(0, 0, 0), Quaternion.identity, encounterObj.transform);
+            encounter = gridObj.GetComponent<EncounterGrid>();
 
-            for (int x = 0; x < map.GetUpperBound(0); x++)
+            var floorLayer = encounter.tilemap;
+            floorLayer.ClearAllTiles();
+            floorLayer.origin = Vector3Int.zero;
+            floorLayer.size = new Vector3Int(width, height);
+
+            foreach (RectInt rect in rects)
             {
-                for (int y = 0; y < map.GetUpperBound(1); y++)
+                // Box fill floors
+                floorLayer.BoxFill((Vector3Int)rect.min + Vector3Int.one, tile, rect.min.x + 1, rect.min.y + 1, rect.max.x - 1, rect.max.y - 1);
+
+                // Create surrounding roads
+                for (int x = 0; x <= rect.width; x++)
                 {
-                    var colorIndex = map[x, y];
-                    texture.SetPixel(x,y, new Color(colorIndex, colorIndex, colorIndex));
+                    floorLayer.SetTile(new Vector3Int(x + rect.xMin, rect.yMin), roadTile);
+                    floorLayer.SetTile(new Vector3Int(x + rect.xMin, rect.yMax), roadTile);
+                }
+                for (int y = 0; y <= rect.height; y++)
+                {
+                    floorLayer.SetTile(new Vector3Int(rect.xMin, y + rect.yMin), roadTile);
+                    floorLayer.SetTile(new Vector3Int(rect.xMax, y + rect.yMin), roadTile);
                 }
             }
 
-            texture.filterMode = FilterMode.Point;
-            texture.Apply();
-            return texture;
+            GenerateBuilding(TrimRect(rects[0]));
+
+            floorLayer.RefreshAllTiles();
+
+            return encounter;
         }
 
-        public Texture2D CreateVoronoiTexture(List<Vector2> points)
+        protected RectInt TrimRect(RectInt rect)
+        {
+            return new RectInt(rect.x + 1, rect.y + 1, rect.width - 2, rect.height - 2);
+        }
+
+        protected void GenerateBuilding(RectInt rect)
+        {
+            var wallLayer = encounter.wallmap;
+            wallLayer.ClearAllTiles();
+
+            for (int x = 0; x <= rect.width; x++)
+            {
+                wallLayer.SetTile(new Vector3Int(x + rect.xMin, rect.yMin), wallSet.WallFR);
+                wallLayer.SetTile(new Vector3Int(x + rect.xMin, rect.yMax), wallSet.WallBL);
+            }
+            for (int y = 0; y <= rect.height; y++)
+            {
+                wallLayer.SetTile(new Vector3Int(rect.xMin, y + rect.yMin), wallSet.WallFL);
+                wallLayer.SetTile(new Vector3Int(rect.xMax, y + rect.yMin), wallSet.WallBR);
+            }
+
+            wallLayer.RefreshAllTiles();
+
+            GenerateRoof(rect);
+        }
+
+        protected void GenerateRoof(RectInt rect)
+        {
+            GameObject roofObj = Instantiate(roofPrefab, new Vector3(0, 0, 0), Quaternion.identity, encounterObj.transform);
+            var roof = roofObj.GetComponent<ProceduralRoof>();
+            var gridTransform = roofObj.GetComponent<GridTransform>();
+            gridTransform.grid = encounter;
+            roof.SetRect(rect);
+        }
+
+        public List<RectInt> CreatedSlicedRects()
+        {
+            var baseRect = new RectInt(0, 0, width - 1, height - 1);
+            List<RectInt> rects = new() { baseRect };
+            for (int i = 0; i < levels; i++)
+            {
+                var index = rng.NextInt(rects.Count - 1);
+                var rect = rects[index];
+                rects.Remove(rect);
+                rects.AddRange(SliceRectangle(rect));
+            }
+            return rects;
+        }
+
+        public Texture2D CreateSlicedTexture(List<RectInt> rects)
         {
             var texture = new Texture2D(width, height, TextureFormat.RGBA32, false);
+
+            var colors = new Color[] { Color.red, Color.green, Color.blue, Color.yellow, Color.magenta, Color.cyan, Color.grey, Color.black, new Color(1f, 0.5f, 0) };
 
             for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
                 {
-                    Vector2 currentPoint = new Vector2(x, y);
-                    Vector2 closestPoint = points.MinBy(p => Vector2.Distance(currentPoint, p));
-                    var colorIndex = (float)points.IndexOf(closestPoint) / points.Count;
-                    texture.SetPixel(x, y, new Color(colorIndex, colorIndex, colorIndex));
+                    texture.SetPixel(x, y, new UnityEngine.Color(1f, 1f, 1f));
                 }
+            }
+
+            foreach (var item in rects.Select((x, i) => new { Value = x, Index = i }))
+            {
+                var rect = item.Value;
+                var color = colors[item.Index];
+                for (int x = 0; x <= rect.width; x++)
+                {
+                    texture.SetPixel(x + rect.xMin, rect.yMin, color);
+                    texture.SetPixel(x + rect.xMin, rect.yMax, color);
+                }
+                for (int y = 0; y <= rect.height; y++)
+                {
+                    texture.SetPixel(rect.xMin, y + rect.yMin, color);
+                    texture.SetPixel(rect.xMax, y + rect.yMin, color);
+                }
+
+                texture.SetPixel((int)rect.center.x, (int)rect.center.y, color);
             }
 
             texture.filterMode = FilterMode.Point;
             texture.Apply();
 
             return texture;
+        }
 
+        protected List<RectInt> SliceRectangle(RectInt baseRect)
+        {
+            List<RectInt> rects = new List<RectInt>();
+            /*bool IsVertical = rng.NextBool();
+
+            // If we dont have enough room to accomidate our buffer, try slicing the other direction
+            if(IsVertical && baseRect.width < buffer * 2)
+            {
+                IsVertical = false;
+            }
+            else if (!IsVertical && baseRect.height < buffer * 2)
+            {
+                IsVertical = true;
+            }*/
+
+            bool IsVertical = baseRect.width > baseRect.height;
+
+            int max = IsVertical ? baseRect.width : baseRect.height;
+
+            // If we still dont have enough room, return the original rectangle0
+            if (max <= buffer * 2) {
+                rects.Add(baseRect);
+                return rects;
+            }
+
+            int position = rng.NextInt(buffer, max - buffer);
+
+            if (IsVertical)
+            {
+                position = position + baseRect.xMin;
+                RectInt rect1 = new();
+                RectInt rect2 = new();
+                rect1.SetMinMax(baseRect.min, new Vector2Int(position, baseRect.yMax));
+                rect2.SetMinMax(new Vector2Int(position + 1, baseRect.yMin), baseRect.max);
+
+                rects.Add(rect1);
+                rects.Add(rect2);
+            }
+            else
+            {
+                position = position + baseRect.yMin;
+                RectInt rect1 = new();
+                RectInt rect2 = new();
+                rect1.SetMinMax(baseRect.min, new Vector2Int(baseRect.xMax, position));
+                rect2.SetMinMax(new Vector2Int(baseRect.xMin, position + 1), baseRect.max);
+
+                rects.Add(rect1);
+                rects.Add(rect2);
+            }
+
+            return rects;
         }
 
         public float[,] GenerateArray()
@@ -103,12 +258,12 @@ namespace CardGame
             return map;
         }
 
-        public float[,] GenerateArrayNoise()
+        /*public float[,] GenerateArrayNoise()
         {
             float[,] map = new float[width, height];
             var noise = new VoronoiNoise((int)seed, 20);
-            /*noise.Amplitude = amplitude;
-            noise.Frequency = frequency;*/
+            *//*noise.Amplitude = amplitude;
+            noise.Frequency = frequency;*//*
             FractalNoise fractal = new FractalNoise(noise, octaves, frequency);
 
             for (int x = 0; x <= map.GetUpperBound(0); x++)
@@ -130,91 +285,6 @@ namespace CardGame
             return map;
         }
 
-        protected List<RectInt> GenerateBuildings(int number = 5)
-        {
-            List<RectInt> buildings = new List<RectInt>();
-            for(int i = 0; i < number; i++)
-            {
-                var nextBuilding = GenerateBuilding();
-                if(buildings.All(b => !b.Overlaps(nextBuilding))) {
-                    buildings.Add(nextBuilding);
-                }
-            }
-
-            return buildings;
-        }
-
-        protected RectInt GenerateBuilding(int minSize = 4, int maxSize = 8)
-        {
-            Vector2Int size = new Vector2Int(rng.NextInt(minSize, maxSize + 1), rng.NextInt(minSize, maxSize + 1));
-            Vector2Int center = new Vector2Int(rng.NextInt(0, width - size.x), rng.NextInt(0, height - size.y));
-
-            return new RectInt(center, size);
-        }
-
-        protected float[,] RenderBuilding(float[,] arr, RectInt building)
-        {
-            // Make Floor
-            for (int x = building.xMin; x <= building.xMax; x++)
-            {
-                for (int y = building.yMin; y <= building.yMax; y++)
-                {
-                    arr[x, y] = 0.5f;
-                }
-            }
-
-            // Make Walls
-            for (int x = building.xMin; x <= building.xMax; x++)
-            {
-                arr[x, building.yMin] = 1;
-                arr[x, building.yMax] = 1;
-            }
-            for (int y = building.yMin; y <= building.yMax; y++)
-            {
-                arr[building.xMin, y] = 1;
-                arr[building.xMax, y] = 1;
-            }
-            return arr;
-        }
-
-        protected float[,] Blockify(float[,] arr, int size)
-        {
-            int xBlocks = (int)Math.Ceiling(arr.GetLength(0) / (float)size);
-            int yBlocks = (int)Math.Ceiling(arr.GetLength(1) / (float)size);
-            float[,] map = new float[xBlocks, yBlocks];
-
-            for (int x = 0; x <= arr.GetUpperBound(0); x += size)
-            {
-                for (int y = 0; y <= arr.GetUpperBound(1); y += size)
-                {
-                    var slice = Slice2D(arr, x, x + size, y, y + size);
-                    var mode = Flatten(slice).GroupBy(item => item)
-                       .OrderByDescending(group => group.Count())
-                       .First().Key;
-                    Debug.Log(mode);
-                    map[x / size, y / size] = mode;
-                }
-            }
-
-            return map;
-        }
-
-        protected float[,] Slice2D(float[,] arr, int xStart, int xEnd, int yStart, int yEnd)
-        {
-            float[,] slice = new float[xEnd - xStart, yEnd - yStart];
-
-            for (int x = xStart; x < xEnd; x++)
-            {
-                for (int y = yStart; y < yEnd; y++)
-                {
-                    if(x < arr.GetLength(0) && y < arr.GetLength(1))
-                    slice[x - xStart, y - yStart] = arr[x,y];
-                }
-            }
-
-            return slice;
-        }
-
         protected void Posterize(float[,] arr)
         {
             NormalizeArray(arr);
@@ -226,7 +296,7 @@ namespace CardGame
                     arr[x, y] = 1 - curve.Evaluate(Mathf.Floor(value * levels) / ((float)levels - 1));
                 }
             }
-        }
+        }*/
 
         protected void NormalizeArray(float[,] arr)
         {
@@ -256,23 +326,28 @@ namespace CardGame
             }
         }
 
-        public static T[] Flatten<T>(T[,] input)
+        public void SpawnCharacters()
         {
-            int width = input.GetLength(0);
-            int height = input.GetLength(1);
-            T[] flattened = new T[width * height];
-
-            for (int j = 0; j < height; j++)
-            {
-                for (int i = 0; i < width; i++)
-                {
-                    flattened[j * width + i] = input[i, j];
-
-                }
-            }
-
-            return flattened;
+            GameObject playerObj = Instantiate(playerPrefab, new Vector3(0, 0, 0), Quaternion.identity, encounterObj.transform);
+            Player player = playerObj.GetComponent<Player>();
+            player.encounterGrid = encounter;
+            player.gridTransform.grid = encounter;
+            encounterManager.characters.Add(player);
+            playerHand.character = player;
         }
 
+        public void InitCamera()
+        {
+            CameraController cc = Camera.main.GetComponent<CameraController>();
+            cc.encounter = encounter.gameObject;
+        }
+
+        public GameObject SpawnEnemy(GameObject prefab)
+        {
+            GameObject enemy = Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity, encounterObj.transform);
+
+            /*var index = rng.NextInt(rects.Count - 1);*/
+            return enemy;
+        }
     }
 }

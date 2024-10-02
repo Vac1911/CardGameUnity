@@ -24,7 +24,12 @@ namespace CardGame
 
         public override void OnInspectorGUI()
         {
-            DrawDefaultInspector();
+
+            serializedObject.Update();
+            var gridProperty = serializedObject.FindProperty("grid");
+            EditorGUILayout.PropertyField(gridProperty);
+            serializedObject.ApplyModifiedProperties();
+
             gridTransform = target as GridTransform;
 
             // Render a field for get+set position accessors:
@@ -35,6 +40,9 @@ namespace CardGame
         // https://gamedev.stackexchange.com/questions/149514/use-unity-handles-for-interaction-in-the-scene-view
         public void OnSceneGUI()
         {
+            if (!gridTransform || !gridTransform.grid)
+                return;
+
             if (!cached)
             {
                 gridTransform = target as GridTransform;

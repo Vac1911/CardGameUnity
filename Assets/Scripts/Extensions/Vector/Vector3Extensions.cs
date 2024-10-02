@@ -99,5 +99,10 @@ namespace Extensions
         /// <param name="v">Input vector</param>
         /// <returns>Signed vector</returns>
         public static Vector3Int GetSignedVector(this Vector3Int v) => new Vector3Int(Math.Sign(v.x), Math.Sign(v.y), Math.Sign(v.z));
+
+        public static int ManhattanDistance(this Vector2 a, Vector2 b)
+        {
+            return (int)(Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y));
+        }
     }
 }

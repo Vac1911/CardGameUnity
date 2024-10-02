@@ -24,4 +24,4 @@ MonoBehaviour:
       type: {class: Move, ns: CardGame.Effects, asm: Assembly-CSharp}
       data:
         label: Move
-        value: 4
+        value: 3

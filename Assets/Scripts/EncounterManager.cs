@@ -11,13 +11,12 @@ namespace CardGame
         public EncounterGrid grid;
 
         // All character mangers in the encounter
-        public List<Character> characters;
+        public List<Character> characters = new List<Character>();
 
         // Where we are in the turn order (-1 if we have not started the turn order)
         public int turnIndex = -1;
 
-        // Start is called before the first frame update
-        void Start()
+        public void StartEncounter()
         {
             foreach(var character in characters)
             {
@@ -28,7 +27,7 @@ namespace CardGame
         // Update is called once per frame
         void Update()
         {
-            if(turnIndex == -1) AdvanceTurn();
+            if (turnIndex == -1) AdvanceTurn();
         }
 
         public void AdvanceTurn()

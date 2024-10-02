@@ -271,6 +271,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1504323231112037625, guid: 2162a35da58f49b419130672c8627f4f, type: 3}
+      propertyPath: encounter
+      value: 
+      objectReference: {fileID: 850263244}
     - target: {fileID: 5953304893894966107, guid: 2162a35da58f49b419130672c8627f4f, type: 3}
       propertyPath: m_Name
       value: Main Camera
@@ -366,135 +370,109 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nodes:
-  - type: {fileID: 11400000, guid: d5f8af0f2418aab45846027d38afeeaf, type: 2}
-    state: 0
+  - state: 0
     position: {x: 1, y: 0, z: 0}
     connections:
     - destinationIndex: 4
-  - type: {fileID: 11400000, guid: d5f8af0f2418aab45846027d38afeeaf, type: 2}
-    state: 0
+  - state: 0
     position: {x: 2, y: 0, z: 0}
     connections:
     - destinationIndex: 5
-  - type: {fileID: 11400000, guid: d5f8af0f2418aab45846027d38afeeaf, type: 2}
-    state: 0
+  - state: 0
     position: {x: 4, y: 0, z: 0}
     connections:
     - destinationIndex: 6
-  - type: {fileID: 11400000, guid: d5f8af0f2418aab45846027d38afeeaf, type: 2}
-    state: 0
+  - state: 0
     position: {x: 5, y: 0, z: 0}
     connections:
     - destinationIndex: 6
-  - type: {fileID: 11400000, guid: d5f8af0f2418aab45846027d38afeeaf, type: 2}
-    state: 0
+  - state: 0
     position: {x: 0, y: 1, z: 0}
     connections:
     - destinationIndex: 7
-  - type: {fileID: 11400000, guid: d5f8af0f2418aab45846027d38afeeaf, type: 2}
-    state: 0
+  - state: 0
     position: {x: 3, y: 1, z: 0}
     connections:
     - destinationIndex: 8
-  - type: {fileID: 11400000, guid: d5f8af0f2418aab45846027d38afeeaf, type: 2}
-    state: 0
+  - state: 0
     position: {x: 4, y: 1, z: 0}
     connections:
     - destinationIndex: 9
     - destinationIndex: 8
-  - type: {fileID: 11400000, guid: d5f8af0f2418aab45846027d38afeeaf, type: 2}
-    state: 0
+  - state: 0
     position: {x: 0, y: 2, z: 0}
     connections:
     - destinationIndex: 10
-  - type: {fileID: 11400000, guid: d5f8af0f2418aab45846027d38afeeaf, type: 2}
-    state: 0
+  - state: 0
     position: {x: 4, y: 2, z: 0}
     connections:
     - destinationIndex: 12
     - destinationIndex: 11
-  - type: {fileID: 11400000, guid: d5f8af0f2418aab45846027d38afeeaf, type: 2}
-    state: 0
+  - state: 0
     position: {x: 5, y: 2, z: 0}
     connections:
     - destinationIndex: 12
-  - type: {fileID: 11400000, guid: d5f8af0f2418aab45846027d38afeeaf, type: 2}
-    state: 0
+  - state: 0
     position: {x: 1, y: 3, z: 0}
     connections:
     - destinationIndex: 13
-  - type: {fileID: 11400000, guid: d5f8af0f2418aab45846027d38afeeaf, type: 2}
-    state: 0
+  - state: 0
     position: {x: 3, y: 3, z: 0}
     connections:
     - destinationIndex: 14
-  - type: {fileID: 11400000, guid: d5f8af0f2418aab45846027d38afeeaf, type: 2}
-    state: 0
+  - state: 0
     position: {x: 5, y: 3, z: 0}
     connections:
     - destinationIndex: 15
-  - type: {fileID: 11400000, guid: d5f8af0f2418aab45846027d38afeeaf, type: 2}
-    state: 0
+  - state: 0
     position: {x: 1, y: 4, z: 0}
     connections:
     - destinationIndex: 16
-  - type: {fileID: 11400000, guid: d5f8af0f2418aab45846027d38afeeaf, type: 2}
-    state: 0
+  - state: 0
     position: {x: 4, y: 4, z: 0}
     connections:
     - destinationIndex: 17
-  - type: {fileID: 11400000, guid: d5f8af0f2418aab45846027d38afeeaf, type: 2}
-    state: 0
+  - state: 0
     position: {x: 5, y: 4, z: 0}
     connections:
     - destinationIndex: 18
-  - type: {fileID: 11400000, guid: d5f8af0f2418aab45846027d38afeeaf, type: 2}
-    state: 0
+  - state: 0
     position: {x: 0, y: 5, z: 0}
     connections:
     - destinationIndex: 19
-  - type: {fileID: 11400000, guid: d5f8af0f2418aab45846027d38afeeaf, type: 2}
-    state: 0
+  - state: 0
     position: {x: 3, y: 5, z: 0}
     connections:
     - destinationIndex: 20
-  - type: {fileID: 11400000, guid: d5f8af0f2418aab45846027d38afeeaf, type: 2}
-    state: 0
+  - state: 0
     position: {x: 5, y: 5, z: 0}
     connections:
     - destinationIndex: 21
-  - type: {fileID: 11400000, guid: d5f8af0f2418aab45846027d38afeeaf, type: 2}
-    state: 0
+  - state: 0
     position: {x: 1, y: 6, z: 0}
     connections:
     - destinationIndex: 22
-  - type: {fileID: 11400000, guid: d5f8af0f2418aab45846027d38afeeaf, type: 2}
-    state: 0
+  - state: 0
     position: {x: 3, y: 6, z: 0}
     connections:
     - destinationIndex: 23
-  - type: {fileID: 11400000, guid: d5f8af0f2418aab45846027d38afeeaf, type: 2}
-    state: 0
+  - state: 0
     position: {x: 4, y: 6, z: 0}
     connections:
     - destinationIndex: 24
     - destinationIndex: 23
-  - type: {fileID: 11400000, guid: d5f8af0f2418aab45846027d38afeeaf, type: 2}
-    state: 0
+  - state: 0
     position: {x: 0, y: 7, z: 0}
     connections: []
-  - type: {fileID: 11400000, guid: d5f8af0f2418aab45846027d38afeeaf, type: 2}
-    state: 0
+  - state: 0
     position: {x: 3, y: 7, z: 0}
     connections: []
-  - type: {fileID: 11400000, guid: d5f8af0f2418aab45846027d38afeeaf, type: 2}
-    state: 0
+  - state: 0
     position: {x: 4, y: 7, z: 0}
     connections: []
   nodePrefab: {fileID: 6746199761131337685, guid: 621ccae6afb8e8949ba963674577578a, type: 3}
   linePrefab: {fileID: 5857439060437771865, guid: e7c8e8fa5d8088e429499a625329800b, type: 3}
   currentNode:
-    type: {fileID: 11400000, guid: d5f8af0f2418aab45846027d38afeeaf, type: 2}
     state: 0
     position: {x: 1, y: 0, z: 0}
     connections:
@@ -515,8 +493,6 @@ MonoBehaviour:
   width: 6
   height: 7
   pathDensity: 4
-  types:
-  - {fileID: 11400000, guid: d5f8af0f2418aab45846027d38afeeaf, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -14,12 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cost: 2
   effects:
-  - id: 0
+  - rid: 0
   cardName: Power Shot
   cardArt: {fileID: 0}
   references:
-    version: 1
-    00000000:
+    version: 2
+    RefIds:
+    - rid: 0
       type: {class: LineAttack, ns: CardGame.Effects, asm: Assembly-CSharp}
       data:
         label: LineAttack

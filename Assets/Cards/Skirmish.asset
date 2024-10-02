@@ -14,20 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cost: 1
   effects:
-  - id: 0
-  - id: 1
+  - rid: 0
+  - rid: 1
   cardName: 
   cardArt: {fileID: 0}
   references:
-    version: 1
-    00000000:
+    version: 2
+    RefIds:
+    - rid: 0
       type: {class: AddEnergy, ns: CardGame.Effects, asm: Assembly-CSharp}
       data:
         label: Add Energy
         value: 1
-    00000001:
+    - rid: 1
       type: {class: RangedAttack, ns: CardGame.Effects, asm: Assembly-CSharp}
       data:
         label: Ranged Attack
         damage: 1
-        range: 3
+        range: 2

@@ -91,6 +91,8 @@ namespace CardGame
         {
             DrawCards(baseHandSize);
             energy = baseEnergy;
+            Debug.Log("StartTurn");
+            Debug.Log(OnCardDraw);
         }
 
         public virtual void EndTurn()

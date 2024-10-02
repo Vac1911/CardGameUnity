@@ -2,6 +2,7 @@ using NaughtyAttributes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using UnityEngine;
 
 namespace CardGame
@@ -15,20 +16,23 @@ namespace CardGame
         {
             get
             {
-                return _privatePosition;
+                return prevPosition;
             }
             set
             {
-                _privatePosition = value;
+                prevPosition = value;
                 UpdateWorldTransform();
             }
         }
 
         [ReadOnly]
-        private Vector3Int _privatePosition;
+        public Vector3Int prevPosition;
 
         void OnEnable()
         {
+            if(grid == null)
+                return;
+
             grid.transforms.Add(this);
         }
 
