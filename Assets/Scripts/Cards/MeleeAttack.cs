@@ -24,7 +24,9 @@ namespace CardGame.Effects
             Vector3Int targetPosition = await character.GetEffectTarget(this, positions);
             Debug.Log("MeleeAttack " + targetPosition.ToString());
             Character attackedCharacter = character.encounterGrid.GetCharacterAtCell(targetPosition);
-            if(attackedCharacter != null)
+
+            Debug.Log("attackedCharacter " + attackedCharacter.ToString());
+            if (attackedCharacter != null)
             {
                 Debug.Log("Hit");
 

@@ -16,6 +16,7 @@ namespace CardGame
     {
         public int pixelsPerUnit = 64;
         public Vector2Int tileSize = new Vector2Int(64, 32);
+        protected int overhang = 0;
         protected RectInt rect;
         protected GridTransform gridTransform;
         protected SpriteRenderer spriteRenderer;
@@ -59,19 +60,20 @@ namespace CardGame
 
             closeVertex = new Vector2Int(texture.width / 2 - 1, tileSize.y / 2);
             rightVertex = closeVertex + tileSize / 2 * (rect.width + 1);
+            leftVertex = new Vector2Int(closeVertex.x - tileSize.x / 2 * (rect.height + 1) + 1, closeVertex.y + tileSize.y / 2 * (rect.height + 1));
+            farVertex = leftVertex + tileSize / 2 * (rect.width + 1);
+
+            // Add overhang
+            closeVertex += Vector2Int.down * overhang;
+            rightVertex += Vector2Int.right * overhang * 2;
+            leftVertex += Vector2Int.left * overhang * 2;
+            farVertex += Vector2Int.up * overhang;
+
+            DrawLine(leftVertex + Vector2Int.one, farVertex);
+            DrawLine(closeVertex, leftVertex);
             DrawLine(closeVertex, rightVertex);
 
-            leftVertex = new Vector2Int(closeVertex.x - tileSize.x / 2 * (rect.height + 1) + 1, closeVertex.y + tileSize.y / 2 * (rect.height + 1));
-            DrawLine(closeVertex, leftVertex);
-
-            farVertex = leftVertex + tileSize / 2 * (rect.width + 1);
-            DrawLine(leftVertex + Vector2Int.one, farVertex);
-            /*DrawLine(rightVertex, farVertex);*/
-
             DrawGable();
-
-            FloodFill(closeVertex + Vector2Int.up * 4, Color.blue);
-
 
             texture.Apply();
             spriteRenderer.sprite = Sprite.Create(texture, new Rect(0, 0, textureX, textureY), new Vector2(0.5f, 0f), pixelsPerUnit);
@@ -86,12 +88,15 @@ namespace CardGame
             Vector2Int ridgeStart = midPoint + offset;
             Vector2Int ridgeEnd = midPointFar + offset;
 
-
             DrawLine(ridgeStart, leftVertex);
             DrawLine(ridgeStart, closeVertex);
             DrawLine(ridgeStart, ridgeEnd);
             DrawLine(ridgeEnd, rightVertex);
             DrawLine(ridgeEnd, farVertex);
+
+            FloodFill(closeVertex + Vector2Int.up * 2, Color.grey);
+            FloodFill(ridgeStart + Vector2Int.up * 2, Color.grey);
+            /*FloodFill(ridgeStart + Vector2Int.down * 2, Color.white);*/
         }
 
         public void DrawHip()
@@ -100,7 +105,6 @@ namespace CardGame
             Vector2Int midPointFar = (rightVertex + farVertex) / 2;
 
             Vector2Int offset = Vector2Int.up * tileSize.y / 4 * (rect.height + 1);
-            Debug.Log(offset);
             Vector2Int ridgeStart = midPoint + offset;
             Vector2Int ridgeEnd = midPointFar + offset;
 
@@ -117,7 +121,7 @@ namespace CardGame
             var points = GetLine(begin, end);
             foreach(var point in points)
             {
-                texture.SetPixel(point.x, point.y, Color.cyan);
+                texture.SetPixel(point.x, point.y, Color.black);
             }
         }
 

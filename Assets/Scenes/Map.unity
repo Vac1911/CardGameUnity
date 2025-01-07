@@ -369,107 +369,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c130cde5ef777ac4b9bbeca1aa7067a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nodes:
-  - state: 0
-    position: {x: 1, y: 0, z: 0}
-    connections:
-    - destinationIndex: 4
-  - state: 0
-    position: {x: 2, y: 0, z: 0}
-    connections:
-    - destinationIndex: 5
-  - state: 0
-    position: {x: 4, y: 0, z: 0}
-    connections:
-    - destinationIndex: 6
-  - state: 0
-    position: {x: 5, y: 0, z: 0}
-    connections:
-    - destinationIndex: 6
-  - state: 0
-    position: {x: 0, y: 1, z: 0}
-    connections:
-    - destinationIndex: 7
-  - state: 0
-    position: {x: 3, y: 1, z: 0}
-    connections:
-    - destinationIndex: 8
-  - state: 0
-    position: {x: 4, y: 1, z: 0}
-    connections:
-    - destinationIndex: 9
-    - destinationIndex: 8
-  - state: 0
-    position: {x: 0, y: 2, z: 0}
-    connections:
-    - destinationIndex: 10
-  - state: 0
-    position: {x: 4, y: 2, z: 0}
-    connections:
-    - destinationIndex: 12
-    - destinationIndex: 11
-  - state: 0
-    position: {x: 5, y: 2, z: 0}
-    connections:
-    - destinationIndex: 12
-  - state: 0
-    position: {x: 1, y: 3, z: 0}
-    connections:
-    - destinationIndex: 13
-  - state: 0
-    position: {x: 3, y: 3, z: 0}
-    connections:
-    - destinationIndex: 14
-  - state: 0
-    position: {x: 5, y: 3, z: 0}
-    connections:
-    - destinationIndex: 15
-  - state: 0
-    position: {x: 1, y: 4, z: 0}
-    connections:
-    - destinationIndex: 16
-  - state: 0
-    position: {x: 4, y: 4, z: 0}
-    connections:
-    - destinationIndex: 17
-  - state: 0
-    position: {x: 5, y: 4, z: 0}
-    connections:
-    - destinationIndex: 18
-  - state: 0
-    position: {x: 0, y: 5, z: 0}
-    connections:
-    - destinationIndex: 19
-  - state: 0
-    position: {x: 3, y: 5, z: 0}
-    connections:
-    - destinationIndex: 20
-  - state: 0
-    position: {x: 5, y: 5, z: 0}
-    connections:
-    - destinationIndex: 21
-  - state: 0
-    position: {x: 1, y: 6, z: 0}
-    connections:
-    - destinationIndex: 22
-  - state: 0
-    position: {x: 3, y: 6, z: 0}
-    connections:
-    - destinationIndex: 23
-  - state: 0
-    position: {x: 4, y: 6, z: 0}
-    connections:
-    - destinationIndex: 24
-    - destinationIndex: 23
-  - state: 0
-    position: {x: 0, y: 7, z: 0}
-    connections: []
-  - state: 0
-    position: {x: 3, y: 7, z: 0}
-    connections: []
-  - state: 0
-    position: {x: 4, y: 7, z: 0}
-    connections: []
+  nodes: []
   nodePrefab: {fileID: 6746199761131337685, guid: 621ccae6afb8e8949ba963674577578a, type: 3}
   linePrefab: {fileID: 5857439060437771865, guid: e7c8e8fa5d8088e429499a625329800b, type: 3}
   currentNode:
@@ -477,7 +377,7 @@ MonoBehaviour:
     position: {x: 1, y: 0, z: 0}
     connections:
     - destinationIndex: 4
-  nodeScale: {x: 1, y: 1.5, z: 1}
+  nodeScale: {x: 1.5, y: 2, z: 1}
 --- !u!114 &850263247
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -490,8 +390,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fdf885980fc616419d48f85383e1b90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 6
-  height: 7
+  width: 4
+  height: 8
   pathDensity: 4
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

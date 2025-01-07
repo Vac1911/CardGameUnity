@@ -1,3 +1,4 @@
+using CardGame.UI;
 using Patterns;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,12 +17,23 @@ namespace CardGame
         // Where we are in the turn order (-1 if we have not started the turn order)
         public int turnIndex = -1;
 
+        public CameraController cameraController;
+
+        public CharacterInfoManager characterInfoManager;
+
+        public uint seed = 0;
+
         public void StartEncounter()
         {
             foreach(var character in characters)
             {
                 character.OnDeathEvent += HandleCharacterDeath;
             }
+            cameraController = Camera.main.GetComponent<CameraController>();
+
+
+            cameraController.CenterOn(characters[0].transform.position);
+            characterInfoManager.Init(characters.ToArray());
         }
 
         // Update is called once per frame

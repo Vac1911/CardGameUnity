@@ -47,11 +47,22 @@ namespace CardGame.Map
             AddConnection(new Connection(DestinationIndex));
         }
 
+        /* Does this Node have a connection to another given node? */
         public bool HasConnectionTo(WorldMap map, Node node)
         {
             foreach(Connection connection in connections)
             {
                 if(connection.GetDestination(map) == node) return true;
+            }
+
+            return false;
+        }
+
+        public bool HasConnectionTo(List<Node> nodes, Node node)
+        {
+            foreach (Connection connection in connections)
+            {
+                if (nodes[connection.destinationIndex] == node) return true;
             }
 
             return false;

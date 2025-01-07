@@ -75,4 +75,12 @@ public class CameraController : MonoBehaviour, IPlayerActions
 
         print("zoom " + zoomDelta.ToString());
     }
+
+    public void CenterOn(Vector3 worldPosition)
+    {
+        Debug.Log("Center On " + worldPosition.ToString());
+        var nextPosition = worldPosition * encounter.transform.localScale.y * -1;
+        encounter.transform.position = nextPosition;
+
+    }
 }

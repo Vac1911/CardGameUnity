@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Tools.UI.Card
@@ -44,6 +45,9 @@ namespace Tools.UI.Card
         [Tooltip("Prefab of the Card C#")]
         GameObject cardPrefabCs;
         int Count { get; set; }
+
+        /*public bool canHighlight = false;
+        protected List<IUiCard> highlightedCards;*/
 
         /// <summary>
         ///     UI Event raised when a card is played.
@@ -143,6 +147,10 @@ namespace Tools.UI.Card
             if (card == null)
                 throw new ArgumentNullException("Null is not a valid argument.");
 
+
+            var promise = new TaskCompletionSource<Task>();
+
+
             character.PlayCard(card.GetData());
 
             /*RemoveCard(card);*/
@@ -150,6 +158,16 @@ namespace Tools.UI.Card
             EnableCards();
             NotifyPileChange();
         }
+
+        /*public void HighlightCard(IUiCard card)
+        {
+            if(highlightedCards.Contains(card))
+                highlightedCards.Remove(card);
+            else
+                highlightedCards.Add(card);
+
+
+        }*/
 
         /// <summary>
         ///     Unselect the card in the parameter.

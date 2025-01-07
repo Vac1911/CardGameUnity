@@ -78,17 +78,21 @@ namespace CardGame
 
         public Character GetCharacterAtCell(Vector3Int cell)
         {
-            var objAtCell = GetObjectAtCell(cell);
-            if (objAtCell == null)
+            var c = GetCharacters().Where(c => c.gridTransform.position == cell).ToList();
+
+            if (c.Count > 0)
+                return c[0];
+            else
                 return null;
-            return objAtCell.GetComponent<Character>();
         }
 
+        // TODO: move to encounter manager
         public List<Character> GetCharacters()
         {
-            return transforms.Where(t => t.HasComponent<Character>()).Select(t => t.GetComponent<Character>()).ToList();
+            return EncounterManager.Instance.characters;
         }
 
+        // TODO: move to encounter manager
         public List<Character> GetCharacters(Team team)
         {
             return GetCharacters().Where(c => c.team.HasFlag(team)).ToList();
@@ -111,6 +115,7 @@ namespace CardGame
         // Get all positions touching a given position where a tile exists
         public List<Vector3Int> GetNeighborCellPositions(Vector3Int center, bool withDiagonal = true)
         {
+
             List<Vector3Int> neighborTiles = new List<Vector3Int>();
             var adgacentPositions = GetAdjacentPositions(center, withDiagonal);
             foreach (var position in adgacentPositions)
@@ -119,6 +124,7 @@ namespace CardGame
                 {
                     neighborTiles.Add(position);
                 }
+                /*neighborTiles.Add(position);*/
             }
 
             return neighborTiles;
@@ -127,8 +133,8 @@ namespace CardGame
         // Breadth-first search for all possible positions that could be moved to
         public List<Vector3Int> GetMovementPositions(Vector3Int start, int distance)
         {
-            HashSet<Vector3Int> positions = new HashSet<Vector3Int>(GetNeighborCellPositions(start));
-            for (int d = 1; d < distance; d++)
+            HashSet<Vector3Int> positions = new HashSet<Vector3Int>(new[] {start});
+            for (int d = 1; d <= distance; d++)
             {
                 var neighbourPositions = positions.SelectMany(p => GetNeighborCellPositions(p))
                     .Where(p => !IsOccupied(p))

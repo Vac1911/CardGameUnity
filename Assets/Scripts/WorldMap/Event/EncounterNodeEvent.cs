@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace CardGame
 {
     public class EncounterNodeEvent : NodeEvent
     {
-        public int seed;
+        public uint seed;
         public override Sprite GetSprite()
         {
             if(sprite == null) {
@@ -18,7 +19,8 @@ namespace CardGame
 
         public override void OnVisit()
         {
-            throw new System.NotImplementedException();
+            GameState.Instance.seed = seed;
+            SceneManager.LoadScene("Encounter2");
         }
     }
 }

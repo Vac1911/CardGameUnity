@@ -7,17 +7,18 @@ namespace CardGame.UI
     public class CharacterInfoManager : MonoBehaviour
     {
         public GameObject characterInfoPrefab;
+        public UIEnergyCount energyCount;
 
-        void Start()
+        public void Init(Character[] characters)
         {
-            Character[] characters = Resources.FindObjectsOfTypeAll<Character>();
             foreach (Character c in characters)
             {
                 InitCharacter(c);
             }
+            energyCount.character = characters[0];
         }
 
-        public void InitCharacter(Character character)
+        protected void InitCharacter(Character character)
         {
             var infoObject = Instantiate(characterInfoPrefab, this.transform);
             var info = infoObject.GetComponent<UICharacterInfo>();

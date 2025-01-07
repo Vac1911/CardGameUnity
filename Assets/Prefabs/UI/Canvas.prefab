@@ -32,10 +32,10 @@ RectTransform:
   m_Father: {fileID: 6079006313439611555}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0, y: 0}
 --- !u!114 &5197161099011898191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -49,6 +49,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterInfoPrefab: {fileID: 8033252644712319287, guid: 04f5b0b0c17f7504988512244b95e1cd, type: 3}
+  energyCount: {fileID: 0}
 --- !u!1 &1844717908170065215
 GameObject:
   m_ObjectHideFlags: 0

@@ -12,7 +12,7 @@ namespace CardGame.UI
 
         void Update()
         {
-            text.text = character.energy.ToString();
+            if(character != null) text.text = character.energy.ToString();
         }
     }
 }

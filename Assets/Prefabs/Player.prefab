@@ -67,14 +67,14 @@ MonoBehaviour:
   team: 1
   maxHealth: 5
   health: 3
-  baseEnergy: 1
+  baseEnergy: 3
   energy: 1
   baseHandSize: 4
   deckList:
   - {fileID: 11400000, guid: 5bc9f89a28c84df4c8f8878d97c0876e, type: 2}
   - {fileID: 11400000, guid: 5bc9f89a28c84df4c8f8878d97c0876e, type: 2}
   - {fileID: 11400000, guid: b315cf03c723659439244b90f7c6a7f4, type: 2}
-  - {fileID: 11400000, guid: f6b12dc20bfa82541be07df71acaf992, type: 2}
+  - {fileID: 11400000, guid: 722b69b25c291884f80aa86922b968d8, type: 2}
   drawPile: []
   hand: []
   discardPile: []

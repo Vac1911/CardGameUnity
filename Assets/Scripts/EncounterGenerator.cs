@@ -6,6 +6,7 @@ using ProceduralNoise;
 
 namespace CardGame
 {
+    using CardGame.UI;
     using Extensions;
     using System.Collections;
     using System.Linq;
@@ -23,10 +24,13 @@ namespace CardGame
         public AnimationCurve curve;*/
         public int levels = 3;
         public int buffer = 4;
+        public int difficulty = 4;
 
         public uint seed = 0;
         Random rng;
 
+
+        public CharacterInfoManager characterInfoManager;
         public UiPlayerHand playerHand;
 
         public TileBase tile;
@@ -45,9 +49,11 @@ namespace CardGame
 
         private void Awake()
         {
+            seed = GameState.Instance.seed;
             if (seed == 0)
             {
-                seed = (uint)(UnityEngine.Random.value * 1000000);
+                throw new Exception("no seed");
+                //seed = (uint)(UnityEngine.Random.value * 1000000);
             }
 
             rng = new Random(seed);
@@ -67,6 +73,8 @@ namespace CardGame
             renderer.sprite = sprite;
 
             InitCamera();
+            encounterManager.characterInfoManager = characterInfoManager;
+            encounterManager.StartEncounter();
         }
 
         protected EncounterGrid GenerateGrid(List<RectInt> rects)
@@ -82,7 +90,7 @@ namespace CardGame
             foreach (RectInt rect in rects)
             {
                 // Box fill floors
-                floorLayer.BoxFill((Vector3Int)rect.min + Vector3Int.one, tile, rect.min.x + 1, rect.min.y + 1, rect.max.x - 1, rect.max.y - 1);
+                floorLayer.BoxFill(new Vector3Int(rect.xMin + 1, rect.yMin + 1, 0), tile, rect.min.x + 1, rect.min.y + 1, rect.max.x - 1, rect.max.y - 1);
 
                 // Create surrounding roads
                 for (int x = 0; x <= rect.width; x++)
@@ -97,7 +105,17 @@ namespace CardGame
                 }
             }
 
-            GenerateBuilding(TrimRect(rects[0]));
+            encounter.wallmap.ClearAllTiles();
+
+            foreach (var rect in rects)
+            {
+                var trimRect = TrimRect(rect);
+                float ratio = (float)(trimRect.width + 1) / (trimRect.height + 1);
+                if (ratio > 0.5f && ratio < 2f)
+                {
+                    GenerateBuilding(trimRect);
+                }
+            }
 
             floorLayer.RefreshAllTiles();
 
@@ -112,7 +130,6 @@ namespace CardGame
         protected void GenerateBuilding(RectInt rect)
         {
             var wallLayer = encounter.wallmap;
-            wallLayer.ClearAllTiles();
 
             for (int x = 0; x <= rect.width; x++)
             {
@@ -124,6 +141,11 @@ namespace CardGame
                 wallLayer.SetTile(new Vector3Int(rect.xMin, y + rect.yMin), wallSet.WallFL);
                 wallLayer.SetTile(new Vector3Int(rect.xMax, y + rect.yMin), wallSet.WallBR);
             }
+
+            wallLayer.SetTile(new Vector3Int(rect.xMin, rect.yMin), wallSet.WallF);
+            wallLayer.SetTile(new Vector3Int(rect.xMax, rect.yMin), wallSet.WallR);
+            wallLayer.SetTile(new Vector3Int(rect.xMin, rect.yMax), wallSet.WallL);
+            wallLayer.SetTile(new Vector3Int(rect.xMax, rect.yMax), wallSet.WallB);
 
             wallLayer.RefreshAllTiles();
 
@@ -258,46 +280,6 @@ namespace CardGame
             return map;
         }
 
-        /*public float[,] GenerateArrayNoise()
-        {
-            float[,] map = new float[width, height];
-            var noise = new VoronoiNoise((int)seed, 20);
-            *//*noise.Amplitude = amplitude;
-            noise.Frequency = frequency;*//*
-            FractalNoise fractal = new FractalNoise(noise, octaves, frequency);
-
-            for (int x = 0; x <= map.GetUpperBound(0); x++)
-            {
-                for (int y = 0; y <= map.GetUpperBound(1); y++)
-                {
-                    float fx = x / (width - 1.0f);
-                    float fy = y / (height - 1.0f);
-                    float value = fractal.Sample2D(fx, fy);
-
-                    map[x, y] = value;
-                }
-            }
-
-            NormalizeArray(map);
-
-            Posterize(map);
-
-            return map;
-        }
-
-        protected void Posterize(float[,] arr)
-        {
-            NormalizeArray(arr);
-            for (int y = 0; y < height; y++)
-            {
-                for (int x = 0; x < width; x++)
-                {
-                    float value = arr[x, y];
-                    arr[x, y] = 1 - curve.Evaluate(Mathf.Floor(value * levels) / ((float)levels - 1));
-                }
-            }
-        }*/
-
         protected void NormalizeArray(float[,] arr)
         {
 
@@ -334,19 +316,36 @@ namespace CardGame
             player.gridTransform.grid = encounter;
             encounterManager.characters.Add(player);
             playerHand.character = player;
+
+            player.gridTransform.position = new Vector3Int(rng.NextInt(1, width - 1), rng.NextInt(1, height - 1));
+
+            int d = 0;
+            while(d < difficulty)
+            {
+                int index = rng.NextInt(enemyPrefabs.Count - 1);
+                GameObject prefab = enemyPrefabs[index];
+                encounterManager.characters.Add(SpawnEnemy(prefab));
+
+                // TODO: assign difficulty to enemies and increment `d` based on enemy difficulty
+                d++;
+            }
         }
 
         public void InitCamera()
         {
             CameraController cc = Camera.main.GetComponent<CameraController>();
-            cc.encounter = encounter.gameObject;
+            cc.encounter = encounter.transform.parent.gameObject;
         }
 
-        public GameObject SpawnEnemy(GameObject prefab)
+        public Enemy SpawnEnemy(GameObject prefab)
         {
-            GameObject enemy = Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity, encounterObj.transform);
+            GameObject enemyObj = Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity, encounterObj.transform);
+            Enemy enemy = enemyObj.GetComponent<Enemy>();
+            enemy.encounterGrid = encounter;
+            enemy.gridTransform.grid = encounter;
 
-            /*var index = rng.NextInt(rects.Count - 1);*/
+            enemy.gridTransform.position = new Vector3Int(rng.NextInt(1, width- 1), rng.NextInt(1, height - 1));
+
             return enemy;
         }
     }

@@ -33,7 +33,9 @@ namespace CardGame
         {
             // Get Characters that can be attacked
             var cellTargets = attackCard.effects[0].GetPossibleTarget(this);
-            List<Character> characterTargets = cellTargets.Select(cell => encounterGrid.GetCharacterAtCell(cell)).Where(character => character != null && character.team == Team.Friendly).ToList();
+            /*List<Character> characterTargets = cellTargets.Select(cell => encounterGrid.GetCharacterAtCell(cell)).Where(character => character != null && character.team == Team.Friendly).ToList();*/
+            List<Character> characterTargets = encounterGrid.GetCharacters(Team.Friendly).Where(character => cellTargets.Contains(character.gridTransform.position)).ToList();
+
 
             if (characterTargets.Count != 0)
             {
@@ -51,7 +53,6 @@ namespace CardGame
                 var moveLimit = 3;
                 var pathLimit = path.SkipLast(1).Take(Math.Min(path.Count - 1, moveLimit)).ToList();
                 path.Print();
-
 
                 Debug.DrawLine(encounterGrid.CellToWorldPosition(gridTransform.position), encounterGrid.CellToWorldPosition(pathLimit[0]), Color.cyan, 5f);
                 for (var i = 1; i < pathLimit.Count; i++)

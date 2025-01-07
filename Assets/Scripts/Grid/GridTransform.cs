@@ -28,15 +28,26 @@ namespace CardGame
         [ReadOnly]
         public Vector3Int prevPosition;
 
-        void OnEnable()
+        protected void Awake()
+        {
+            Debug.Log(gameObject.name + " awake");
+            if (grid == null)
+                return;
+
+            grid.transforms.Add(this);
+            UpdateWorldTransform();
+        }
+
+        protected void OnEnable()
         {
             if(grid == null)
                 return;
 
             grid.transforms.Add(this);
+            UpdateWorldTransform();
         }
 
-        void OnDestroy()
+        protected void OnDestroy()
         {
             grid.transforms.Remove(this);
         }

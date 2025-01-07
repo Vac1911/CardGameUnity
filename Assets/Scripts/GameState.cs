@@ -12,7 +12,13 @@ namespace CardGame
     [Serializable]
     public class GameState : Singleton<GameState>
     {
+        public uint seed;
         public WorldMap map;
         public List<Card> deckList = new List<Card>();
+
+        public Node currentNode
+        {
+            get { return map.currentNode; }
+        }
     }
 }

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.MemoryProfiler;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Random = UnityEngine.Random;
@@ -18,11 +19,13 @@ namespace CardGame.Map
 
         protected List<Path> paths = new List<Path>();
         protected List<Node> nodes = new List<Node>();
+        protected Vector2Int startPosition;
 
         public void Generate()
         {
             // Implementation of https://steamcommunity.com/sharedfiles/filedetails/?id=2830078257
 
+            startPosition = new Vector2Int(width / 2, -1);
             CreatePaths();
             CreateNodes();
         }
@@ -55,7 +58,10 @@ namespace CardGame.Map
 
             foreach (var position in positions)
             {
-                var node = new Node(position, new EncounterNodeEvent());
+                EncounterNodeEvent nodeEvent = new EncounterNodeEvent();
+                nodeEvent.seed = (uint)(UnityEngine.Random.value * 1000000);
+                var node = new Node(position, nodeEvent);
+
                 var nodePaths = paths.Where(path => path.start == position).ToArray();
                 foreach(var path in nodePaths) {
                     node.AddConnection(Array.IndexOf(positions.ToArray(), path.end));
@@ -63,6 +69,19 @@ namespace CardGame.Map
                 nodes.Add(node);
             }
             /*AdjustNodePositions();*/
+        }
+
+        protected List<Node> GetParentNodes(Node node)
+        {
+            var parents = new List<Node>();
+            foreach (var n in nodes)
+            {
+                if(n.HasConnectionTo(nodes, node))
+                {
+                    parents.Add(n);
+                }
+            }
+            return parents;
         }
 
         protected void AdjustNodePositions()
@@ -104,6 +123,9 @@ namespace CardGame.Map
             // Create Random Path
             int x = Random.Range(0, width);
             Vector2Int currentPosition = new Vector2Int(x, 0);
+
+            // Create Path start
+            route.Add(new Path(startPosition, currentPosition));
 
             for (int y = 0; y < height; y++)
             {
@@ -156,6 +178,7 @@ namespace CardGame.Map
             return false;
         }
 
+        // This is a temporary object when creating routes
         protected struct Path
         {
             public Vector2Int start;

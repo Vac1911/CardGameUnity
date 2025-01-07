@@ -27,9 +27,11 @@ namespace CardGame.Map
         // Start is called before the first frame update
         void Start()
         {
-            generator = GetComponent<MapGenerator>();
-            generator.Generate();
-            this.nodes = generator.GetNodes();
+            if(nodes.Count == 0) {
+                generator = GetComponent<MapGenerator>();
+                generator.Generate();
+                nodes = generator.GetNodes();
+            }
 
             Render();
         }
